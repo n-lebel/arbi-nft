@@ -1,16 +1,5 @@
-# Basic Sample Hardhat Project
+# NFT contract and marketplace on Arbitrum Testnet
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+NFT contract (Arbitrum testnet): **0xC085c30123A925fDea383d9d67dE1f14E5ecEE54**
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
-# asscxsa
+NFT marketplace (Arbitrum testnet): **0xfEC496204Ba5cbe24fc44dfCf267f5e62b0Ad355**
