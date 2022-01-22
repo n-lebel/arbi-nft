@@ -1,12 +1,17 @@
 import '../styles/globals.css'
 import Link from "next/link"
 import Head from 'next/head'
+import ConnectButton from '../components/connect-button'
 
 function MyApp({ Component, pageProps }) {
   return (
     <div>
       <nav className="border-b p-6">
-        <p className="text-4xl font-bold">NFT Marketplace</p>
+        <div className="flex justify-between">
+          <p className="text-4xl font-bold">NFT Marketplace</p>
+          <ConnectButton />
+        </div>
+
         <div className="flex mt-4">
           <Link href="/">
             <a className="mr-6 text-pink-500">

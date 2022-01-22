@@ -12,7 +12,7 @@ contract NFTMarket is ReentrancyGuard {
     Counters.Counter private _itemsSold;
 
     address payable private _owner;
-    uint256 private _listingPrice = 0.025 ether;
+    uint256 private _listingPrice = 0.001 ether;
 
     constructor() {
         _owner = payable(msg.sender);
