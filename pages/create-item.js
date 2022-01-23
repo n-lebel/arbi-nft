@@ -17,6 +17,7 @@ import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 export default function CreateItem() {
     const [fileUrl, setFileUrl] = useState(null)
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
+    const [tokenId, setTokenId] = useState('undefined')
     const router = useRouter()
 
     async function onChange(e) {
@@ -34,7 +35,8 @@ export default function CreateItem() {
             console.log('Error uploading file: ', error)
         }
     }
-    async function createMarket() {
+
+    async function createMint() {
         const { name, description, price } = formInput
         if (!name || !description || !price || !fileUrl) return
         /* first, upload to IPFS */
@@ -45,10 +47,49 @@ export default function CreateItem() {
             const added = await client.add(data)
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
             /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-            createSale(url)
+            mint(url)
         } catch (error) {
             console.log('Error uploading file: ', error)
         }
+    }
+
+    async function mint(url) {
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+
+        /* next, create the item */
+        let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
+        let transaction = await contract.createToken(url)
+        let tx = await transaction.wait()
+        console.log(transaction)
+
+        let event = tx.events[0]
+        let value = event.args[2]
+        let tokenId = value.toNumber()
+
+        setTokenId(tokenId)
+    }
+
+    async function list() {
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+
+        const price = ethers.utils.parseUnits(formInput.price, 'ether')
+
+        /* then list the item for sale on the marketplace */
+        let contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+        let listingPrice = await contract.getListingPrice()
+        listingPrice = listingPrice.toString()
+
+        let transaction = await contract.createMarketItem(nftaddress, tokenId, price, { value: listingPrice })
+        console.log(transaction)
+
+        await transaction.wait()
+        router.push('/')
     }
 
     async function createSale(url) {
@@ -115,9 +156,26 @@ export default function CreateItem() {
                         <img className="rounded mt-4" width="350" src={fileUrl} />
                     )
                 }
-                <button onClick={createMarket} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
-                    Create Digital Asset
-                </button>
+                <div className="flex justify-around">
+                    {
+                        (!formInput.name || !formInput.description || !formInput.price || !fileUrl) ?
+                            <button className="font-bold mt-4 bg-gray-300 text-white rounded p-4 shadow-lg">
+                                Mint NFT
+                            </button> :
+                            <button onClick={createMint} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
+                                Mint NFT
+                            </button>
+                    }
+                    {
+                        (tokenId == 'undefined') ? <button className="font-bold mt-4 bg-gray-300 text-white rounded p-4 shadow-lg">
+                            List on market
+                        </button> :
+                            <button onClick={list} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
+                                List on market
+                            </button>
+                    }
+                </div>
+
             </div>
         </div>
     )
