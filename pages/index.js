@@ -45,7 +45,7 @@ export default function Home() {
     setLoadingState('loaded')
   }
 
-  async function buyNFT(nft) {
+  async function buyNft(nft) {
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
@@ -65,7 +65,6 @@ export default function Home() {
     <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>
   )
 
-
   return (
     <div className="flex justify-center">
       <div className="px-4" style={{ maxWidth: '1600px' }}>
@@ -73,7 +72,7 @@ export default function Home() {
           {
             nfts.map((nft, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} />
+                <img src={nft.image} className='object-scale-down h-48 w-96' />
                 <div className="p-4">
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>
                   <div style={{ height: '70px', overflow: 'hidden' }}>

@@ -156,7 +156,7 @@ export default function CreateItem() {
                         <img className="rounded mt-4" width="350" src={fileUrl} />
                     )
                 }
-                <div className="flex justify-around">
+                <div className="flex justify-evenly">
                     {
                         (!formInput.name || !formInput.description || !formInput.price || !fileUrl) ?
                             <button className="font-bold mt-4 bg-gray-300 text-white rounded p-4 shadow-lg">
